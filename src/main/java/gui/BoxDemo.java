@@ -4,12 +4,12 @@ import java.awt.*;
 import javax.swing.*;
 
 public class BoxDemo extends JFrame {
-    JButton b1,b2,b3,b4;
+    Button b1,b2,b3,b4;
     public BoxDemo(){
-        b1=new JButton("one");
-        b2=new JButton("two");
-        b3=new JButton("two add one");
-        b4=new JButton("two add two");
+        b1=new Button("one");
+        b2=new Button("two");
+        b3=new Button("two add one");
+        b4=new Button("two add two");
 
         //2.创建一个横向的Box,并添加两个按钮
         Box h1 = Box.createHorizontalBox();
@@ -18,11 +18,11 @@ public class BoxDemo extends JFrame {
 
         //3.创建一个纵向的Box，并添加两个按钮
         Box h2 = Box.createVerticalBox();
+        h2.add(h1);
         h2.add(b3);
         h2.add(b4);
 
         //4.把box容器添加到frame容器中
-        this.add(h1,BorderLayout.NORTH);
         this.add(h2);
 
         //5.设置frame最佳大小并可见
