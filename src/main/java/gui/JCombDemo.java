@@ -12,6 +12,7 @@ public class JCombDemo extends JFrame {
     public JCombDemo() {
         // 调用 refresh 方法，添加 hobby 对象
         refresh();
+        this.getContentPane().add("North", com);
         // 设置窗口可见
         this.setVisible(true);
         // 设置窗口大小
@@ -24,6 +25,10 @@ public class JCombDemo extends JFrame {
         for(int i=0;i<hobbys.length;i++){
             data.addElement(new hobby(i, hobbys[i]));
         }
+    }
+
+    public static void main(String[] args) {
+        new JCombDemo();
     }
 
 }
