@@ -2,15 +2,15 @@ package gui;
 
 public class hobby {
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    int id;
+    String id;
 
     public String getHobby() {
         return hobby;
@@ -27,7 +27,7 @@ public class hobby {
 
     String hobby;
 
-    public hobby(int id, String hobby){
+    public hobby(String id, String hobby){
         this.id = id;
         this.hobby = hobby;
     }

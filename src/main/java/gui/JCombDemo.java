@@ -1,33 +1,63 @@
 package gui;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.Properties;
 import javax.swing.*;
 public class JCombDemo extends JFrame {
-    // 定义一个字符串数组，用于存放 hobby 对象
-    String hobbys[] = {"Coding", "Sleeping", "Eating", "Playing"};
-    // 创建一个 DefaultComboBoxModel 对象，用于存放 hobby 对象
     DefaultComboBoxModel<hobby> data=new DefaultComboBoxModel<hobby>();
-    // 创建一个 JComboBox 对象，用于显示 hobby 对象
     JComboBox<DefaultComboBoxModel<hobby>> com=new JComboBox(data);
-    public JCombDemo() {
-        // 调用 refresh 方法，添加 hobby 对象
+    JButton button=new JButton("搜索");
+    public JCombDemo() throws FileNotFoundException {
+        // 向data里添加城市数据
         refresh();
-        this.getContentPane().add("North", com);
-        // 设置窗口可见
+
+        // 设置布局
+        JPanel p1 = new JPanel();
+        p1.add(com);
+        p1.add(button);
+        p1.setBackground(Color.yellow);
+        add(p1, BorderLayout.NORTH);
+
+        // 设置窗口
         this.setVisible(true);
-        // 设置窗口大小
-        setSize(800, 800);
-        // 设置窗口位置
+        setSize(500, 500);
         setLocationRelativeTo(null);
+
+        // 添加监听器
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, com.getSelectedItem());
+            }});
+
     }
-    // 添加 hobby 对象
     public void refresh(){
-        for(int i=0;i<hobbys.length;i++){
-            data.addElement(new hobby(i, hobbys[i]));
+        Properties pro=new Properties();
+        BufferedReader reader= null;
+        try {
+            reader = new BufferedReader(
+                    new InputStreamReader(
+                            new FileInputStream("hobby.properties")
+                    )
+            );
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            pro.load(reader);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (String key:pro.stringPropertyNames()){
+            System.out.println(key);
+            data.addElement(new hobby(key, pro.getProperty(key)));
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         new JCombDemo();
     }
 
