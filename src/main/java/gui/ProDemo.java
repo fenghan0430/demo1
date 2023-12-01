@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class ProDemo {
     public static void main(String[] args) throws Exception{
-        Properties pro=new Properties();
+        Properties pro = new Properties();
         BufferedReader reader=new BufferedReader(
                 new InputStreamReader(
                         new FileInputStream("hobby.properties")));
