@@ -8,9 +8,9 @@ import java.sql.*;
 import java.awt.*;
 
 public class CardManagement extends JFrame {
-    private String url = "jdbc:mysql://10.1.78.81:3306/schoo1"; // MySQL数据库地址和端口
-    private String username = "root"; // 数据库用户名
-    private String password = "123456"; // 数据库密码
+    private final String url = "jdbc:mysql://10.1.78.81:3306/schoo1"; // MySQL数据库地址和端口
+    private final String username = "root"; // 数据库用户名
+    private final String password = "123456"; // 数据库密码
     public CardManagement() {
         setTitle("联系");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -73,6 +73,67 @@ public class CardManagement extends JFrame {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String[] textFieldValues = new String[labels.length];
+
+                for (int i = 0; i < labels.length; i++) {
+                    textFieldValues[i] = textFields[i].getText();
+                }
+
+                boolean hasEmptyFields = false;
+
+                for (int i = 0; i < textFieldValues.length; i++) {
+                    if (textFieldValues[i] == null || textFieldValues[i].isEmpty()) {
+                        hasEmptyFields = true;
+                        break; // 如果有任何一个字段为空，就跳出循环
+                    }
+                }
+
+                if (hasEmptyFields) {
+                    // 存在空值
+                    System.out.println("有一个或多个文本框为空值。");
+                } else {
+                    // 所有字段都有值
+                    System.out.println("所有文本框都包含有效值。");
+                }
+
+                // SQL插入语句
+                String sql = "INSERT INTO person_info (name,gender,birthplace,phone,mobile,qq,wechat) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+                try {
+                    // 注册MySQL JDBC驱动程序
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+
+                    // 建立数据库连接
+                    Connection connection = DriverManager.getConnection(url, username, password);
+
+                    // 创建PreparedStatement对象，用于执行SQL语句
+                    PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+                    // 设置参数值
+                    preparedStatement.setString(1, textFieldValues[0]);
+                    preparedStatement.setString(2, textFieldValues[1]);
+                    preparedStatement.setString(3, textFieldValues[2]);
+                    preparedStatement.setString(4, textFieldValues[3]);
+                    preparedStatement.setString(5, textFieldValues[4]);
+                    preparedStatement.setString(6, textFieldValues[5]);
+                    preparedStatement.setString(7, textFieldValues[6]);
+
+                    // 执行SQL插入操作
+                    int rowsAffected = preparedStatement.executeUpdate();
+
+                    // 输出插入的行数
+                    System.out.println("插入了 " + rowsAffected + " 行数据。");
+
+                    // 关闭连接
+                    preparedStatement.close();
+                    connection.close();
+                } catch (ClassNotFoundException | SQLException e1) {
+                    e1.printStackTrace();
+                }
+                for (int i = 0; i < textFields.length; i++) {
+                    textFields[i].setText(""); // 清空文本框内容
+                }
+                JOptionPane.showMessageDialog(CardManagement.this, "数据插入成功！", "成功", JOptionPane.INFORMATION_MESSAGE);
 
             }
         });
@@ -116,8 +177,8 @@ public class CardManagement extends JFrame {
                     if (selectedName != null) {
                         // 调用您的方法来获取人员信息
                         String[] personInfo = getPersonInfoByName(selectedName);
-                        for (int i = 0; i < personInfo.length && i < textFields.length; i++) {
-                            textFields[i].setText(personInfo[i]);
+                        for (int i = 0; i < 7; i++) {
+                            textFields[i].setText(personInfo[i+1]);
                         }
                     }
                 }
@@ -170,7 +231,7 @@ public class CardManagement extends JFrame {
     }
 
     public String[] getPersonInfoByName(String name) {
-        String[] personInfo = new String[7]; // 因为有8列信息
+        String[] personInfo = new String[8]; // 因为有8列信息
 
         try {
             // 注册MySQL JDBC驱动程序
@@ -180,7 +241,7 @@ public class CardManagement extends JFrame {
             Connection connection = DriverManager.getConnection(this.url, this.username, this.password);
 
             // 创建SQL查询
-            String sql = "SELECT name,gender,birthplace,phone,mobile,qq,wechat FROM person_info WHERE name=?";
+            String sql = "SELECT * FROM person_info WHERE name=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, name);
 
@@ -189,13 +250,14 @@ public class CardManagement extends JFrame {
 
             // 处理查询结果
             if (resultSet.next()) {
-                personInfo[0] = resultSet.getString("name");
-                personInfo[1] = resultSet.getString("gender");
-                personInfo[2] = resultSet.getString("birthplace");
-                personInfo[3] = resultSet.getString("phone");
-                personInfo[4] = resultSet.getString("mobile");
-                personInfo[5] = resultSet.getString("qq");
-                personInfo[6] = resultSet.getString("wechat");
+                personInfo[0] = resultSet.getString("id");
+                personInfo[1] = resultSet.getString("name");
+                personInfo[2] = resultSet.getString("gender");
+                personInfo[3] = resultSet.getString("birthplace");
+                personInfo[4] = resultSet.getString("phone");
+                personInfo[5] = resultSet.getString("mobile");
+                personInfo[6] = resultSet.getString("qq");
+                personInfo[7] = resultSet.getString("wechat");
             }
 
             // 关闭连接
